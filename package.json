@@ -1,0 +1,11 @@
+{
+  "name": "buying.com.smartcontracts",
+  "version": "1.0.0",
+  "description": "smartcontracts for buying.com",
+  "main": "index.js",
+  "author": "deepu.tg| deepu.tg@netobjex.com",
+  "license": "MIT",
+  "dependencies": {
+    "algosdk": "^1.8.1"
+  }
+}
