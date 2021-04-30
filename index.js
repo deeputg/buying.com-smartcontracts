@@ -158,22 +158,6 @@ async function callApp(client, account, index, appArgs) {
   if (transactionResponse["global-state-delta"] !== undefined) {
     console.log("Global State updated:", transactionResponse["global-state-delta"]);
   }
-  if (transactionResponse["local-state-delta"] !== undefined) {
-    console.log("Local State updated:", transactionResponse["local-state-delta"]);
-  }
-}
-
-// read local state of application from user account
-async function readLocalState(client, account, index) {
-  let accountInfoResponse = await client.accountInformation(account.addr).do();
-  for (let i = 0; i < accountInfoResponse["apps-local-state"].length; i++) {
-    if (accountInfoResponse["apps-local-state"][i].id == index) {
-      console.log("User's local state:");
-      for (let n = 0; n < accountInfoResponse["apps-local-state"][i][`key-value`].length; n++) {
-        console.log(accountInfoResponse["apps-local-state"][i][`key-value`][n]);
-      }
-    }
-  }
 }
 
 // read global state of application
@@ -313,7 +297,6 @@ async function clearApp(client, account, index) {
   return appId;
 }
 
-
 const ItoB = (x)=> {
   var bytes = [];
   var i = 8;
@@ -324,6 +307,7 @@ const ItoB = (x)=> {
 
   return new Uint8Array(Buffer.from(bytes));
 }
+
 async function main() {
   try {
 
@@ -333,7 +317,6 @@ async function main() {
       console.log("please provide arguments")
       return
     }
-    
 
     // initialize an algodClient
     let algodClient = config.algodClient;
@@ -349,7 +332,6 @@ async function main() {
     let clearProgram = await compileProgram(algodClient, clearProgramSource);
 
     if(myArgs[0]=="create"){
-
         // create new application
         const appId = await createApp(
           algodClient,
@@ -362,23 +344,20 @@ async function main() {
           config.globalBytes,
         );
     } else if(myArgs[0]=="update"){
+      // update the application
       const appId = parseInt(myArgs[1])
       await updateApp(algodClient,creatorAccount,appId,approvalProgram,clearProgram)
     }
     else if(myArgs[0]=="storeData"){
+      // store the payload from ipfs in the global state of the app
       const appId = parseInt(myArgs[1])
       let storingArgs = new Array();
       storingArgs.push(new Uint8Array(Buffer.from("storeData")));
       storingArgs.push(new Uint8Array(Buffer.from("indexFileHash")));
       storingArgs.push(new Uint8Array(Buffer.from("QmTJ2tnAyuM4Hdhwr2FvMkDagdHiDaJHjsHBSKqzxHy4SY")));
-      // storingArgs.push(new Uint8Array(Buffer.from("customerId")));
-      // storingArgs.push(new Uint8Array(Buffer.from("")));
-      // storingArgs.push(new Uint8Array(Buffer.from("date")));
-      // storingArgs.push(new Uint8Array(Buffer.from("1,2,3,4")));
-      console.log(storingArgs)
-  
+      // console.log(storingArgs)
       await callApp(algodClient, creatorAccount, appId, storingArgs);
-      console.log("here")
+      
       // read global state of application
       await readGlobalState(algodClient, creatorAccount, appId);
     }
