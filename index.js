@@ -14,88 +14,17 @@ const algodToken = {
 };
 
 // declare application state storage (immutable)
-localInts = 5;
-localBytes = 5;
-globalInts = 5;
-globalBytes = 5;
+localInts = 0;
+localBytes = 0;
+globalInts = 0;
+globalBytes = 64;
 
 // user declared approval program (initial)
-var approvalProgramSourceInitial = `#pragma version 2
-txn ApplicationID
-int 0
-==
-bnz l0
-txn OnCompletion
-int DeleteApplication
-==
-bnz l1
-txn OnCompletion
-int UpdateApplication
-==
-bnz l2
-txna ApplicationArgs 0
-byte "storeData"
-==
-bnz l3
-err
-l0:
-byte "Creator"
-txn Sender
-app_global_put
-int 1
-return
-b l4
-l1:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-b l4
-l2:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-b l4
-l3:
-txn Sender
-byte "Creator"
-app_global_get
-==
-bnz l5
-err
-l5:
-int 1
-return
-l4:`;
+var approvalProgramSourceInitial;
 
 // declare clear state program source
 clearProgramSource = `#pragma version 2
-int 0
-global CurrentApplicationID
-byte "voted"
-app_local_get_ex
-store 0
-store 1
-global Round
-byte "VoteEnd"
-app_global_get
-<=
-load 0
-&&
-bz l11
-load 1
-load 1
-app_global_get
-int 1
--
-app_global_put
-l11:
-int 1
-return
-`;
+int 1`;
 
 async function fetchPrograms(){
   approvalProgramSourceInitial = await fs.readFile('./teal/payload.teal');
@@ -442,7 +371,7 @@ async function main() {
 
     // compile programs
     await fetchPrograms();
-    console.log("progra fetched",approvalProgramSourceInitial)
+    console.log("program fetched",approvalProgramSourceInitial)
     let approvalProgram = await compileProgram(algodClient, approvalProgramSourceInitial);
     let clearProgram = await compileProgram(algodClient, clearProgramSource);
 

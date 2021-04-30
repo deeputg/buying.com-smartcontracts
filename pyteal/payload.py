@@ -2,12 +2,6 @@ from pyteal import *
 import json
 
 
-class Person:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-
 def approval_program():
     on_creation = Seq([
         App.globalPut(Bytes("Creator"), Txn.sender()),
@@ -38,6 +32,6 @@ def approval_program():
 
 
 if __name__ == "__main__":
-    with open('../teal/payload.teal', 'w') as f:
+    with open('./teal/payload.teal', 'w') as f:
         compiled = compileTeal(approval_program(), Mode.Application)
         f.write(compiled)
