@@ -1,6 +1,8 @@
 const algosdk = require("algosdk");
-const {approvalProgram} = require('./loadProgram')
 
+// user declared account mnemonics
+const userMnemonic = "relief start derive trophy purpose sniff oil bird glass gun happy maze security debris key assume front garment private stamp cabin horse produce absorb erode";
+const creatorMnemonic = "verb entry during engage bar visa collect sight critic stone better civil burger zebra helmet flip pool grief clinic much novel wall panel above wet";
 
 // user declared algod connection parameters
 const algodPort = "";
@@ -12,20 +14,15 @@ const algodToken = {
 // initialize an algodClient
 const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 
-
 // declare application state storage (immutable)
-const localInts = 5;
-const localBytes = 5;
-const globalInts = 5;
-const globalBytes = 5;
+const localInts = 0;
+const localBytes = 0;
+const globalInts = 0;
+const globalBytes = 1;
 
 module.exports ={
-  algosdk,
   creatorMnemonic,
   userMnemonic,
-  algodPort,
-  algodServer,
-  algodToken,
   localInts,
   localBytes,
   globalInts,

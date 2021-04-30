@@ -1,101 +1,13 @@
 const algosdk = require("algosdk");
 const fs = require('fs').promises
-
-// user declared account mnemonics
-userMnemonic = "relief start derive trophy purpose sniff oil bird glass gun happy maze security debris key assume front garment private stamp cabin horse produce absorb erode";
-creatorMnemonic = "verb entry during engage bar visa collect sight critic stone better civil burger zebra helmet flip pool grief clinic much novel wall panel above wet";
-
-// user declared algod connection parameters
-algodPort = "";
-algodServer = "https://testnet-algorand.api.purestake.io/ps2";
-// algodToken =  'Ia5iwM5mr84RUZPCNvfmRB5VrM7jQMK4cSWBcgZ1'
-const algodToken = {
-  'X-API-Key': "Ia5iwM5mr84RUZPCNvfmRB5VrM7jQMK4cSWBcgZ1"
-};
-
-// declare application state storage (immutable)
-localInts = 5;
-localBytes = 5;
-globalInts = 5;
-globalBytes = 5;
+const config = require('./config')
 
 // user declared approval program (initial)
-var approvalProgramSourceInitial = `#pragma version 2
-txn ApplicationID
-int 0
-==
-bnz l0
-txn OnCompletion
-int DeleteApplication
-==
-bnz l1
-txn OnCompletion
-int UpdateApplication
-==
-bnz l2
-txna ApplicationArgs 0
-byte "storeData"
-==
-bnz l3
-err
-l0:
-byte "Creator"
-txn Sender
-app_global_put
-int 1
-return
-b l4
-l1:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-b l4
-l2:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-b l4
-l3:
-txn Sender
-byte "Creator"
-app_global_get
-==
-bnz l5
-err
-l5:
-int 1
-return
-l4:`;
+var approvalProgramSourceInitial;
 
 // declare clear state program source
 clearProgramSource = `#pragma version 2
-int 0
-global CurrentApplicationID
-byte "voted"
-app_local_get_ex
-store 0
-store 1
-global Round
-byte "VoteEnd"
-app_global_get
-<=
-load 0
-&&
-bz l11
-load 1
-load 1
-app_global_get
-int 1
--
-app_global_put
-l11:
-int 1
-return
-`;
+int 1`;
 
 async function fetchPrograms(){
   approvalProgramSourceInitial = await fs.readFile('./teal/payload.teal');
@@ -111,7 +23,7 @@ async function compileProgram(client, programSource) {
   return compiledBytes;
 }
 
-// helper function to await transaction confirmation
+
 // Function used to wait for a tx confirmation
 const waitForConfirmation = async function (algodclient, txId) {
   let status = await algodclient.status().do();
@@ -128,16 +40,6 @@ const waitForConfirmation = async function (algodclient, txId) {
   }
 };
 
-const waitForRound = async (algodclient, toRound) => {
-  let lastRound = 0;
-  do {
-    const status = await algodclient.status().do();
-    lastRound = status["last-round"];
-    console.log(lastRound)
-  } while (toRound > lastRound);
-  return lastRound;
-
-}
 
 // create new application
 async function createApp(
@@ -434,15 +336,15 @@ async function main() {
     
 
     // initialize an algodClient
-    let algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
+    let algodClient = config.algodClient;
 
     // get accounts from mnemonic
-    let creatorAccount = algosdk.mnemonicToSecretKey(creatorMnemonic);
-    let userAccount = algosdk.mnemonicToSecretKey(userMnemonic);
+    let creatorAccount = algosdk.mnemonicToSecretKey(config.creatorMnemonic);
+    let userAccount = algosdk.mnemonicToSecretKey(config.userMnemonic);
 
     // compile programs
     await fetchPrograms();
-    console.log("progra fetched",approvalProgramSourceInitial)
+    console.log("program fetched",approvalProgramSourceInitial)
     let approvalProgram = await compileProgram(algodClient, approvalProgramSourceInitial);
     let clearProgram = await compileProgram(algodClient, clearProgramSource);
 
@@ -454,10 +356,10 @@ async function main() {
           creatorAccount,
           approvalProgram,
           clearProgram,
-          localInts,
-          localBytes,
-          globalInts,
-          globalBytes,
+          config.localInts,
+          config.localBytes,
+          config.globalInts,
+          config.globalBytes,
         );
     } else if(myArgs[0]=="update"){
       const appId = parseInt(myArgs[1])
@@ -476,7 +378,7 @@ async function main() {
       console.log(storingArgs)
   
       await callApp(algodClient, creatorAccount, appId, storingArgs);
-  console.log("here")
+      console.log("here")
       // read global state of application
       await readGlobalState(algodClient, creatorAccount, appId);
     }
