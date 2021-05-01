@@ -1,6 +1,4 @@
 from pyteal import *
-import json
-
 
 def approval_program():
     on_creation = Seq([
@@ -8,13 +6,18 @@ def approval_program():
         Return(Int(1))
     ])
 
-    is_creator = Txn.sender() == App.globalGet(Bytes("Creator"))
-
     key = Txn.application_args[1]
     value = Txn.application_args[2]
 
+    is_creator = Txn.sender() == App.globalGet(Bytes("Creator"))
+    is_valid_key = key == Bytes("indexFileHash")
+    is_valid_value = Len(Bytes(value.__str__())) == Int(46)
+
     on_storeData = Seq([
+        Assert(Txn.application_args.length() == Int(3)),
         Assert(is_creator),
+        Assert(is_valid_key),
+        Assert(is_valid_value),
         App.globalPut(key, value),
         Return(Int(1))
     ])
@@ -23,9 +26,9 @@ def approval_program():
         [Txn.application_id() == Int(0), on_creation],
         [Txn.on_completion() == OnComplete.DeleteApplication, Return(is_creator)],
         [Txn.on_completion() == OnComplete.UpdateApplication, Return(is_creator)],
-        # [Txn.on_completion() == OnComplete.CloseOut, on_closeout],
-        # [Txn.on_completion() == OnComplete.OptIn, on_register],
-        [Txn.application_args[0] == Bytes("storeData"), on_storeData]
+        [And(Txn.application_args[0] == Bytes("storeData"), 
+                               Txn.on_completion() == OnComplete.NoOp,), 
+                                                       on_storeData]
     )
 
     return program
