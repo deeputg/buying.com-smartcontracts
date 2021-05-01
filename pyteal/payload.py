@@ -27,7 +27,7 @@ def approval_program():
         [Txn.on_completion() == OnComplete.DeleteApplication, Return(is_creator)],
         [Txn.on_completion() == OnComplete.UpdateApplication, Return(is_creator)],
         [And(Txn.application_args[0] == Bytes("storeData"), 
-                               Txn.on_completion() == OnComplete.NoOp,), 
+                               Txn.on_completion() == OnComplete.NoOp), 
                                                        on_storeData]
     )
 
