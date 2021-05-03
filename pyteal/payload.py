@@ -14,15 +14,13 @@ def approval_program():
     is_updator = Txn.sender() == App.globalGet(Bytes("Updator"))
     is_valid_key = key == Bytes("indexFileHash")
     is_valid_value = Len(Bytes(value.__repr__())) == Int(46)
-    #is_valid_hash = Bytes(value.__repr__()[0]) == Bytes('Q')  
-                 
+                
 
     on_storeData = Seq([
         Assert(Txn.application_args.length() == Int(3)),
         Assert(is_updator),
         Assert(is_valid_key),
         Assert(is_valid_value),
-        #Assert(is_valid_hash),
         App.globalPut(key, value),
         Return(Int(1))
     ])
