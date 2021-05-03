@@ -18,7 +18,7 @@ const algodClient = new algosdk.Algodv2(algodToken, algodServer, algodPort);
 const localInts = 0;
 const localBytes = 0;
 const globalInts = 0;
-const globalBytes = 2;
+const globalBytes = 3;
 
 module.exports ={
   creatorMnemonic,
