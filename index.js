@@ -356,10 +356,10 @@ async function main() {
       storingArgs.push(new Uint8Array(Buffer.from("indexFileHash")));
       storingArgs.push(new Uint8Array(Buffer.from("QmTJ2tnAyuM4Hdhwr2FvMkDagdHiDaJHjsHBSKqzxHy4SY")));
       // console.log(storingArgs)
-      await callApp(algodClient, creatorAccount, appId, storingArgs);
+      await callApp(algodClient, userAccount, appId, storingArgs);
       
       // read global state of application
-      await readGlobalState(algodClient, creatorAccount, appId);
+      await readGlobalState(algodClient, userAccount, appId);
     }
   } catch (err) {
     console.log("err", err);
