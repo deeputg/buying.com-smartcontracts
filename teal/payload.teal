@@ -40,7 +40,7 @@ byte "indexFileHash"
 bnz l11
 err
 l11:
-byte "<pyteal.TxnaExpr object at 0x00000118F7C57BE0>"
+txna ApplicationArgs 2
 len
 int 46
 ==
