@@ -158,6 +158,9 @@ async function callApp(client, account, index, appArgs) {
   console.log("Called app-id:", transactionResponse["txn"]["txn"]["apid"]);
   if (transactionResponse["global-state-delta"] !== undefined) {
     console.log("Global State updated:", transactionResponse["global-state-delta"]);
+    let kv = transactionResponse["global-state-delta"][0];
+    console.log(`Key : ${atob(kv.key)}`)
+    console.log(`Value : ${atob(kv.value.bytes)}`)
   }
 }
 
