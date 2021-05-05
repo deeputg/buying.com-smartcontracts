@@ -333,6 +333,7 @@ async function main() {
 
     if(myArgs[0]=="create"){
         // create new application
+        
         const appId = await createApp(
           algodClient,
           creatorAccount,
@@ -353,7 +354,6 @@ async function main() {
       const appId = parseInt(myArgs[1])
       let storingArgs = new Array();
       storingArgs.push(new Uint8Array(Buffer.from("storeData")));
-      storingArgs.push(new Uint8Array(Buffer.from("indexFileHash")));
       storingArgs.push(new Uint8Array(Buffer.from("QmTJ2tnAyuM4Hdhwr2FvMkDagdHiDaJHjsHBSKqzxHy4SY")));
       // console.log(storingArgs)
       await callApp(algodClient, userAccount, appId, storingArgs);

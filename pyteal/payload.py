@@ -7,21 +7,20 @@ def approval_program():
         Return(Int(1))
     ])
 
-    key = Txn.application_args[1]
-    value = Txn.application_args[2]
+   
+    value = Txn.application_args[1]
 
     is_creator = Txn.sender() == App.globalGet(Bytes("Creator"))
     is_updator = Txn.sender() == App.globalGet(Bytes("Updator"))
-    is_valid_key = key == Bytes("indexFileHash")
-    is_valid_value = Len(Bytes(value.__repr__())) == Int(46)
-                
-
+    is_valid_length = Len(value) == Int(46)
+    is_valid_hash = Substring(value, Int(0), Int(2)) == Bytes('Qm')  
+    
     on_storeData = Seq([
-        Assert(Txn.application_args.length() == Int(3)),
+        Assert(Txn.application_args.length() == Int(2)),
         Assert(is_updator),
-        Assert(is_valid_key),
-        Assert(is_valid_value),
-        App.globalPut(key, value),
+        Assert(is_valid_length),
+        Assert(is_valid_hash),
+        App.globalPut(Bytes('indexFileHash'), value),
         Return(Int(1))
     ])
 
@@ -32,7 +31,6 @@ def approval_program():
         [And(Txn.application_args[0] == Bytes("storeData"), 
                                Txn.on_completion() == OnComplete.NoOp), 
                                                        on_storeData]
-
     )
 
     return program
