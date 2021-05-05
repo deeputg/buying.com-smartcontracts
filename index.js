@@ -1,6 +1,7 @@
 const algosdk = require("algosdk");
 const fs = require('fs').promises
 const config = require('./config')
+const util = require('util');
 
 // user declared approval program (initial)
 var approvalProgramSourceInitial;
@@ -15,7 +16,7 @@ async function fetchPrograms(){
 
 // helper function to compile program source
 async function compileProgram(client, programSource) {
-  let encoder = new TextEncoder();
+  let encoder = new util.TextEncoder();
   let programBytes = encoder.encode(programSource);
   let compileResponse = await client.compile(programBytes).do();
   let compiledBytes = new Uint8Array(Buffer.from(compileResponse.result, "base64"));
