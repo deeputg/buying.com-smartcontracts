@@ -2,15 +2,15 @@
 txn ApplicationID
 int 0
 ==
-bnz l18
+bnz l16
 txn OnCompletion
 int DeleteApplication
 ==
-bnz l17
+bnz l15
 txn OnCompletion
 int UpdateApplication
 ==
-bnz l16
+bnz l14
 txna ApplicationArgs 0
 byte "storeData"
 ==
@@ -22,7 +22,7 @@ bnz l5
 err
 l5:
 txn NumAppArgs
-int 3
+int 2
 ==
 bnz l7
 err
@@ -35,45 +35,39 @@ bnz l9
 err
 l9:
 txna ApplicationArgs 1
-byte "indexFileHash"
+len
+int 46
 ==
 bnz l11
 err
 l11:
-txna ApplicationArgs 2
-len
-int 46
-==
-bnz l13
-err
-l13:
-txna ApplicationArgs 2
+txna ApplicationArgs 1
 int 0
 int 2
 substring3
 byte "Qm"
 ==
-bnz l15
+bnz l13
 err
-l15:
+l13:
+byte "indexFileHash"
 txna ApplicationArgs 1
-txna ApplicationArgs 2
 app_global_put
 int 1
 return
+l14:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
+l15:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
 l16:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-l17:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-l18:
 byte "Creator"
 txn Sender
 app_global_put
