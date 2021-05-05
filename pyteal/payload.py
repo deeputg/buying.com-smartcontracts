@@ -10,8 +10,8 @@ def approval_program():
    
     value = Txn.application_args[1]
 
-    is_creator = Txn.sender() == App.globalGet(Bytes("Creator"))
-    is_updator = Txn.sender() == App.globalGet(Bytes("Updator"))
+    is_creator = Txn.sender() == App.globalGet(Bytes('Creator'))
+    is_updator = Txn.sender() == App.globalGet(Bytes('Updator'))
     is_valid_length = Len(value) == Int(46)
     is_valid_hash = Substring(value, Int(0), Int(2)) == Bytes('Qm')  
     
@@ -37,6 +37,6 @@ def approval_program():
 
 
 if __name__ == "__main__":
-    with open('./teal/payload.teal', 'w') as f:
+    with open('../teal/payload.teal', 'w') as f:
         compiled = compileTeal(approval_program(), Mode.Application)
         f.write(compiled)
