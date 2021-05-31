@@ -2,15 +2,15 @@
 txn ApplicationID
 int 0
 ==
-bnz l16
+bnz l0
 txn OnCompletion
 int DeleteApplication
 ==
-bnz l15
+bnz l1
 txn OnCompletion
 int UpdateApplication
 ==
-bnz l14
+bnz l2
 txna ApplicationArgs 0
 byte "storeData"
 ==
@@ -18,61 +18,65 @@ txn OnCompletion
 int NoOp
 ==
 &&
-bnz l5
+bnz l3
 err
-l5:
+l0:
+byte "Creator"
+txn Sender
+app_global_put
+byte "Updator"
+addr IVJRGE77IR4MIOUSLSSKMRYRJHMDBXSQ65JRAJI5YYC2FCBHSFHAVZIRIM
+app_global_put
+int 1
+return
+b l4
+l1:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
+b l4
+l2:
+txn Sender
+byte "Creator"
+app_global_get
+==
+return
+b l4
+l3:
 txn NumAppArgs
 int 2
 ==
-bnz l7
+bnz l5
 err
-l7:
+l5:
 txn Sender
 byte "Updator"
 app_global_get
 ==
-bnz l9
+bnz l6
 err
-l9:
+l6:
 txna ApplicationArgs 1
 len
 int 46
 ==
-bnz l11
+bnz l7
 err
-l11:
+l7:
 txna ApplicationArgs 1
 int 0
 int 2
 substring3
 byte "Qm"
 ==
-bnz l13
+bnz l8
 err
-l13:
+l8:
 byte "indexFileHash"
 txna ApplicationArgs 1
 app_global_put
 int 1
 return
-l14:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-l15:
-txn Sender
-byte "Creator"
-app_global_get
-==
-return
-l16:
-byte "Creator"
-txn Sender
-app_global_put
-byte "Updator"
-addr O7MYWYE25TYP6POTZT7SA4YAC6EAJI2B7XMUFBXBK7K4BCDGQ4SGL6YDVM
-app_global_put
-int 1
-return
+l4:
