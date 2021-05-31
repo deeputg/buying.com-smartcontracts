@@ -1,14 +1,14 @@
 const algosdk = require("algosdk");
 
 // user declared account mnemonics
-const userMnemonic = "relief start derive trophy purpose sniff oil bird glass gun happy maze security debris key assume front garment private stamp cabin horse produce absorb erode";
-const creatorMnemonic = "verb entry during engage bar visa collect sight critic stone better civil burger zebra helmet flip pool grief clinic much novel wall panel above wet";
+const userMnemonic = process.env.UPDATOR_MNEMONIC; // IVJRGE77IR4MIOUSLSSKMRYRJHMDBXSQ65JRAJI5YYC2FCBHSFHAVZIRIM
+const creatorMnemonic = process.env.CREATOR_MNEMONIC; // VAMKGCYKG4TSJH5PRIZUYVOSSBUXDSWYU5XYDFFTKLGK6GZLZZJ57QE3EQ
 
 // user declared algod connection parameters
 const algodPort = "";
-const algodServer = "https://testnet-algorand.api.purestake.io/ps2";
+const algodServer = "https://mainnet-algorand.api.purestake.io/ps2";
 const algodToken = {
-  'X-API-Key': "Ia5iwM5mr84RUZPCNvfmRB5VrM7jQMK4cSWBcgZ1"
+  'X-API-Key': process.env.ALGOD_TOKEN
 };
 
 // initialize an algodClient
@@ -20,7 +20,7 @@ const localBytes = 0;
 const globalInts = 0;
 const globalBytes = 3;
 
-module.exports ={
+module.exports = {
   creatorMnemonic,
   userMnemonic,
   localInts,
