@@ -351,7 +351,7 @@ async function main() {
     } else if(myArgs[0]=="update"){
       // update the application
       const appId = parseInt(myArgs[1])
-      await updateApp(algodClient,creatorAccount,appId,approvalProgram,clearProgram)
+      await updateApp(algodClient,userAccount,appId,approvalProgram,clearProgram)
     }
     else if(myArgs[0]=="storeData"){
       // store the payload from ipfs in the global state of the app
