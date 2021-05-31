@@ -3,7 +3,7 @@ from pyteal import *
 def approval_program():
     on_creation = Seq([
         App.globalPut(Bytes("Creator"), Txn.sender()),
-        App.globalPut(Bytes("Updator"), Addr("O7MYWYE25TYP6POTZT7SA4YAC6EAJI2B7XMUFBXBK7K4BCDGQ4SGL6YDVM")),
+        App.globalPut(Bytes("Updator"), Addr("IVJRGE77IR4MIOUSLSSKMRYRJHMDBXSQ65JRAJI5YYC2FCBHSFHAVZIRIM")),
         Return(Int(1))
     ])
 
