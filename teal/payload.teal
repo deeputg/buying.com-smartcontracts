@@ -24,6 +24,9 @@ l0:
 byte "Creator"
 txn Sender
 app_global_put
+byte "indexFileHash"
+byte ""
+app_global_put
 byte "Updator"
 addr IVJRGE77IR4MIOUSLSSKMRYRJHMDBXSQ65JRAJI5YYC2FCBHSFHAVZIRIM
 app_global_put

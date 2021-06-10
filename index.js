@@ -10,7 +10,7 @@ var approvalProgramSourceInitial;
 clearProgramSource = `#pragma version 2
 int 1`;
 
-async function fetchPrograms(){
+async function fetchPrograms() {
   approvalProgramSourceInitial = await fs.readFile('./teal/payload.teal');
 }
 
@@ -301,7 +301,7 @@ async function clearApp(client, account, index) {
   return appId;
 }
 
-const ItoB = (x)=> {
+const ItoB = (x) => {
   var bytes = [];
   var i = 8;
   do {
@@ -316,8 +316,7 @@ async function main() {
   try {
 
     var myArgs = process.argv.slice(2);
-    if(myArgs.length<=0)
-    {
+    if (myArgs.length <= 0) {
       console.log("please provide arguments")
       return
     }
@@ -331,37 +330,37 @@ async function main() {
 
     // compile programs
     await fetchPrograms();
-    console.log("program fetched",approvalProgramSourceInitial)
+    console.log("program fetched", approvalProgramSourceInitial)
     let approvalProgram = await compileProgram(algodClient, approvalProgramSourceInitial);
     let clearProgram = await compileProgram(algodClient, clearProgramSource);
 
-    if(myArgs[0]=="create"){
-        // create new application
-        
-        const appId = await createApp(
-          algodClient,
-          creatorAccount,
-          approvalProgram,
-          clearProgram,
-          config.localInts,
-          config.localBytes,
-          config.globalInts,
-          config.globalBytes,
-        );
-    } else if(myArgs[0]=="update"){
+    if (myArgs[0] == "create") {
+      // create new application
+
+      const appId = await createApp(
+        algodClient,
+        creatorAccount,
+        approvalProgram,
+        clearProgram,
+        config.localInts,
+        config.localBytes,
+        config.globalInts,
+        config.globalBytes,
+      );
+    } else if (myArgs[0] == "update") {
       // update the application
       const appId = parseInt(myArgs[1])
-      await updateApp(algodClient,userAccount,appId,approvalProgram,clearProgram)
+      await updateApp(algodClient, creatorAccount, appId, approvalProgram, clearProgram)
     }
-    else if(myArgs[0]=="storeData"){
+    else if (myArgs[0] == "storeData") {
       // store the payload from ipfs in the global state of the app
       const appId = parseInt(myArgs[1])
       let storingArgs = new Array();
       storingArgs.push(new Uint8Array(Buffer.from("storeData")));
-      storingArgs.push(new Uint8Array(Buffer.from("QmTJ2tnAyuM4Hdhwr2FvMkDagdHiDaJHjsHBSKqzxHy4SY")));
+      storingArgs.push(new Uint8Array(Buffer.from("QmfSnGmfexFsLDkbgN76Qhx2W8sxrNDobFEQZ6ER5qg2wW")));
       // console.log(storingArgs)
       await callApp(algodClient, userAccount, appId, storingArgs);
-      
+
       // read global state of application
       await readGlobalState(algodClient, userAccount, appId);
     }
